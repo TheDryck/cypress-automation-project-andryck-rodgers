@@ -107,7 +107,7 @@ describe('SauceDemo Automation Workflow', ()=>{
         Login.login('standard_user', 'secret_sauce');
 
         productData.products.sort();
-        cy.get('.inventory_item_name').each((elem, index, lst)=>{
+        cy.get('.inventory_item_name').each((elem, index)=>{
             expect(elem.text()).equal(productData.products[index].name)
         })
     })
@@ -119,10 +119,31 @@ describe('SauceDemo Automation Workflow', ()=>{
         cy.get('.product_sort_container').select(productData.sort['Z to A'])
 
         productData.products.sort().reverse();
-        cy.get('.inventory_item_name').each((elem, index, lst)=>{
+        cy.get('.inventory_item_name').each((elem, index)=>{
             expect(elem.text()).equal(productData.products[index].name)
         })
     })
 
-    it('')
+    it('Sort products from low to high', ()=>{
+        cy.visit('https://www.saucedemo.com/');
+        Login.login('standard_user', 'secret_sauce');
+
+        cy.get('.product_sort_container').select(productData.sort['Low to High']);
+        productData.products.sort((a, b) => a.price - b.price);
+        cy.get('.inventory_item_price').each((elem, index)=>{
+            expect(elem.text()).equal(`$${productData.products[index].price}`)
+        })
+    })
+
+    it('Sort products from high to low', ()=>{
+        cy.visit('https://www.saucedemo.com/');
+        Login.login('standard_user', 'secret_sauce');
+
+        cy.get('.product_sort_container').select(productData.sort['High to Low']);
+        productData.products.sort((a, b) => b.price - a.price);
+        cy.get('.inventory_item_price').each((elem, index)=>{
+            expect(elem.text()).equal(`$${productData.products[index].price}`)
+        })
+
+    })
 })
